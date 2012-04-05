@@ -25,11 +25,15 @@ class NotificationServer(object):
         return self.mail.send_mail(target, title, content)
 
     def mq_callback(self, ch, method, properties, body):
-        req = json.loads(body)
-        target = req["target"]
-        title = req["title"]
-        content = req["content"]
-        self._send_mail(target, title, content)
+        try:
+            req = json.loads(body)
+            target = req["target"]
+            title = req["title"]
+            content = req["content"]
+
+            self._send_mail(target, title, content)
+        except:
+            print "FAIL.. %s" % (body)
 
     def listen(self):
         chan = self.mq.channel()
@@ -60,6 +64,5 @@ if __name__ == '__main__':
         }
     ]
     options, args = make_optparser(usage_str, options)
-
     tmp = NotificationServer(options.mail_account, options.mq_server, options.queue_name)
     tmp.listen()
