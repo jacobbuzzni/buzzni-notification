@@ -4,7 +4,7 @@
 import sys
 sys.path.append("/home/newmoni/workspace")
 
-import pika, json
+import pika, json, datetime
 from utils.src.mail import Sender
 from utils.src.optparserutils import make_optparser
 
@@ -30,8 +30,10 @@ class NotificationServer(object):
             target = req["target"]
             title = req["title"]
             content = req["content"]
-
             self._send_mail(target, title, content)
+            print "="*50
+            print "SUCCESS : %s" % (str(datetime.datetime.now()))
+            print "%s" % (body)
         except:
             print "FAIL.. %s" % (body)
 
