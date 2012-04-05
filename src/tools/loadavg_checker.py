@@ -6,24 +6,23 @@ sys.path.append("/home/newmoni/workspace")
 import utils.src.mqutils as mqutils
 
 def send(avg):
-    target_user = open("./target_user", "r")
-    target_user = target_user.readlines()[0]
+    mail_list = open("./mail_list", "r")
+    mail_list = mail_list.read().replace("\n", "")
+    mail_list = mail_list.split(",")
 
     mqutils.send_mq("35.buzzni.com", "noti", {"title":"WARN : %s is too hot" % str(socket.gethostname()),
                                               "content":"loadavg : %s      // %s" % (str(avg), str(datetime.datetime.now())),
-                                              "target":[target_user]})
+                                              "target":mail_list})
 
 def start():
     while 1:
         try:
             result = commands.getoutput("cat /proc/loadavg").split(" ")[0]
             avg = float(result)
-            if avg >= 0.0:
+            if avg >= 4.0:
                 send(avg)
-                print "send!"
-                time.sleep(1)
-            print "rotate"
-            time.sleep(1)
+                time.sleep(25)
+            time.sleep(5)
         except KeyboardInterrupt:
             exit(0)
         except IOError, e:
