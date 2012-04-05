@@ -4,9 +4,6 @@
 import sys
 sys.path.append("/home/newmoni/workspace")
 
-# test
-import time
-
 import pika, json
 from utils.src.mail import Sender
 from utils.src.optparserutils import make_optparser
@@ -29,16 +26,10 @@ class NotificationServer(object):
 
     def mq_callback(self, ch, method, properties, body):
         req = json.loads(body)
-        s = time.time()
-        print "======================"
-        print req
         target = req["target"]
         title = req["title"]
         content = req["content"]
         self._send_mail(target, title, content)
-        f = time.time()
-        print f - s
-        print "======================"
 
     def listen(self):
         chan = self.mq.channel()
